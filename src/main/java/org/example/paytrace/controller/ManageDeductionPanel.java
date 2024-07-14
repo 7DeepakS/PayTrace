@@ -3,6 +3,7 @@ package org.example.paytrace.controller;
 import com.toedter.calendar.JDateChooser;
 import org.example.paytrace.model.Deduction;
 import org.example.paytrace.service.DeductionsWindow;
+import org.example.paytrace.service.LoginWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +21,7 @@ public class ManageDeductionPanel extends JPanel {
     private JLabel remainingAmountLabel;
     private double totalAmount;
     private double remainingAmount;
+    private String username;
     private List<Deduction> deductions;
     private DeductionsWindow deductionsWindow;
     private RemainingAmountListener remainingAmountListener;
@@ -27,7 +29,7 @@ public class ManageDeductionPanel extends JPanel {
     public ManageDeductionPanel(RemainingAmountListener listener) {
         this.remainingAmountListener = listener;
         this.deductions = new ArrayList<>();
-        this.deductionsWindow = new DeductionsWindow();
+        this.deductionsWindow = new DeductionsWindow(username, totalAmount);
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));

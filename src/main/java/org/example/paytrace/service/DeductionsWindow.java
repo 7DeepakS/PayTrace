@@ -31,7 +31,7 @@ public class DeductionsWindow extends JFrame {
     private JDateChooser startDateChooser;
     private JDateChooser endDateChooser;
 
-    public DeductionsWindow() {
+    public DeductionsWindow(String username, double totalAmount) {
         chartBackend = new DeductionsChartBackend();
         deductionsService = new DeductionsService();
 

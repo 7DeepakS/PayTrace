@@ -48,22 +48,32 @@ public class LoginWindow extends JFrame {
     }
 
     private void initializeUI() {
-        setTitle("PayTrace - Login/Register");
-        setSize(400, 300);
+        setTitle("PayTrace - Login");
+        setSize(450, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         // Heading panel
-        JPanel headingPanel = new JPanel();
-        headingPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JPanel headingPanel = new JPanel(new BorderLayout());
         headingPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        // Logo on the left
+        ImageIcon logoIcon = new ImageIcon("src/main/java/logo/PayTraceLogo.jpg");
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(logoIcon);
+        headingPanel.add(logoLabel, BorderLayout.WEST);
+
+        // "Welcome to PayTrace" label on the right
         JLabel headingLabel = new JLabel("Welcome to PayTrace");
         headingLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headingPanel.add(headingLabel);
+        headingLabel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Add left padding
+        headingPanel.add(headingLabel, BorderLayout.CENTER);
+
         add(headingPanel, BorderLayout.NORTH);
 
-        // Main panel for login/register form
+        // Main panel for login form
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         GridBagConstraints gbc = new GridBagConstraints();
@@ -73,39 +83,49 @@ public class LoginWindow extends JFrame {
         // Username
         gbc.gridx = 0;
         gbc.gridy = 0;
-        mainPanel.add(new JLabel("Username:"), gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        JLabel usernameLabel = new JLabel("Username:");
+        mainPanel.add(usernameLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
         usernameField = new JTextField(15);
+        usernameField.setFont(new Font("Times New Roman", Font.BOLD, 14));
         mainPanel.add(usernameField, gbc);
 
         // Password
         gbc.gridx = 0;
         gbc.gridy = 1;
-        mainPanel.add(new JLabel("Password:"), gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        JLabel passwordLabel = new JLabel("Password:");
+        mainPanel.add(passwordLabel, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
         passwordField = new JPasswordField(15);
         mainPanel.add(passwordField, gbc);
 
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+
         // Login button
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER;
         JButton loginButton = createStyledButton("Login");
         loginButton.addActionListener(e -> attemptLogin());
-        mainPanel.add(loginButton, gbc);
+        buttonPanel.add(loginButton);
 
         // Register button
-        gbc.gridx = 1;
-        gbc.gridy = 2;
         JButton registerButton = createStyledButton("Register");
-        registerButton.addActionListener(e -> attemptRegister());
-        mainPanel.add(registerButton, gbc);
+        registerButton.addActionListener(e -> openRegisterWindow());
+        buttonPanel.add(registerButton);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(buttonPanel, gbc);
 
         add(mainPanel, BorderLayout.CENTER);
     }
@@ -134,31 +154,12 @@ public class LoginWindow extends JFrame {
         }
     }
 
-    private void attemptRegister() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-
-        if (username.isEmpty() || password.isEmpty() || username.trim().isEmpty() || username.charAt(0) == ' ') {
-            JOptionPane.showMessageDialog(this,
-                    "Username and password cannot be empty. Username cannot start with a space.",
-                    "Registration Failed",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (users.containsKey(username)) {
-            JOptionPane.showMessageDialog(this,
-                    "Username already exists. Please choose a different one.",
-                    "Registration Failed",
-                    JOptionPane.ERROR_MESSAGE);
-        } else {
-            users.put(username, password);
-            saveUsers();
-            JOptionPane.showMessageDialog(this,
-                    "Registration successful. You can now login.",
-                    "Registration Successful",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
+    private void openRegisterWindow() {
+        SwingUtilities.invokeLater(() -> {
+            RegisterWindow registerWindow = new RegisterWindow(this);
+            registerWindow.setVisible(true);
+            setVisible(false);
+        });
     }
 
     private void openMainApplication(String username) {
@@ -167,6 +168,15 @@ public class LoginWindow extends JFrame {
             paymentTrackerGUI.setVisible(true);
             dispose();
         });
+    }
+
+    public void addUser(String username, String password) {
+        users.put(username, password);
+        saveUsers();
+    }
+
+    public boolean userExists(String username) {
+        return users.containsKey(username);
     }
 
     public static void main(String[] args) {
