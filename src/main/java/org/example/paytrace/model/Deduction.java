@@ -24,13 +24,4 @@ public class Deduction {
     public LocalDateTime getDateTime() {
         return dateTime;
     }
-
-    @Override
-    public String toString() {
-        return "Deduction{" +
-                "amount=" + amount +
-                ", reason='" + reason + '\'' +
-                ", dateTime=" + dateTime +
-                '}';
-    }
 }
