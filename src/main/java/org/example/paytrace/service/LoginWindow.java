@@ -5,6 +5,7 @@ import org.example.paytrace.controller.PaymentTrackerGUI;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,70 +55,56 @@ public class LoginWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Heading panel
         JPanel headingPanel = new JPanel(new BorderLayout());
         headingPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Logo on the left
-        ImageIcon logoIcon = new ImageIcon("src/main/java/logo/PayTraceLogo.jpg");
+        // Updated logo loading and scaling
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/logo/PayTraceLogo.png"));
         Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        logoIcon = new ImageIcon(scaledImage);
-        JLabel logoLabel = new JLabel(logoIcon);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(scaledIcon);
         headingPanel.add(logoLabel, BorderLayout.WEST);
 
-        // "Welcome to PayTrace" label on the right
         JLabel headingLabel = new JLabel("Welcome to PayTrace");
         headingLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headingLabel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Add left padding
+        headingLabel.setBorder(new EmptyBorder(0, 20, 0, 0));
         headingPanel.add(headingLabel, BorderLayout.CENTER);
 
         add(headingPanel, BorderLayout.NORTH);
 
-        // Main panel for login form
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Username
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        JLabel usernameLabel = new JLabel("Username:");
-        mainPanel.add(usernameLabel, gbc);
+        mainPanel.add(new JLabel("Username:"), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         usernameField = new JTextField(15);
         usernameField.setFont(new Font("Times New Roman", Font.BOLD, 14));
         mainPanel.add(usernameField, gbc);
 
-        // Password
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        JLabel passwordLabel = new JLabel("Password:");
-        mainPanel.add(passwordLabel, gbc);
+        mainPanel.add(new JLabel("Password:"), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         passwordField = new JPasswordField(15);
         mainPanel.add(passwordField, gbc);
 
-        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
-        // Login button
-        JButton loginButton = createStyledButton("Login");
-        loginButton.addActionListener(e -> attemptLogin());
+        JButton loginButton = createStyledButton("Login", e -> attemptLogin());
         buttonPanel.add(loginButton);
 
-        // Register button
-        JButton registerButton = createStyledButton("Register");
-        registerButton.addActionListener(e -> openRegisterWindow());
+        JButton registerButton = createStyledButton("Register", e -> openRegisterWindow());
         buttonPanel.add(registerButton);
 
         gbc.gridx = 0;
@@ -130,13 +117,14 @@ public class LoginWindow extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
     }
 
-    private JButton createStyledButton(String text) {
+    private JButton createStyledButton(String text, ActionListener listener) {
         JButton button = new JButton(text);
         button.setBackground(new Color(59, 89, 182));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setPreferredSize(new Dimension(120, 40));
+        button.addActionListener(listener);
         return button;
     }
 
@@ -186,8 +174,7 @@ public class LoginWindow extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.setVisible(true);
+            new LoginWindow().setVisible(true);
         });
     }
 }

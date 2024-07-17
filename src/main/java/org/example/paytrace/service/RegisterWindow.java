@@ -28,10 +28,10 @@ public class RegisterWindow extends JFrame {
         headingPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Logo on the left
-        ImageIcon logoIcon = new ImageIcon("src/main/java/logo/PayTraceLogo.jpg");
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/logo/PayTraceLogo.png"));
         Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-        logoIcon = new ImageIcon(scaledImage);
-        JLabel logoLabel = new JLabel(logoIcon);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(scaledIcon);
         headingPanel.add(logoLabel, BorderLayout.WEST);
 
         // "Register for PayTrace" label on the right

@@ -3,7 +3,6 @@ package org.example.paytrace.controller;
 import com.toedter.calendar.JDateChooser;
 import org.example.paytrace.model.Deduction;
 import org.example.paytrace.service.DeductionsWindow;
-import org.example.paytrace.service.LoginWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +20,6 @@ public class ManageDeductionPanel extends JPanel {
     private JLabel remainingAmountLabel;
     private double totalAmount;
     private double remainingAmount;
-    private String username;
     private List<Deduction> deductions;
     private DeductionsWindow deductionsWindow;
     private RemainingAmountListener remainingAmountListener;
@@ -29,7 +27,7 @@ public class ManageDeductionPanel extends JPanel {
     public ManageDeductionPanel(RemainingAmountListener listener) {
         this.remainingAmountListener = listener;
         this.deductions = new ArrayList<>();
-        this.deductionsWindow = new DeductionsWindow(username, totalAmount);
+        this.deductionsWindow = new DeductionsWindow(null, totalAmount);
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -39,6 +37,13 @@ public class ManageDeductionPanel extends JPanel {
 
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add remaining amount label at the top right corner
+        JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        remainingAmountLabel = new JLabel("Remaining Amount: ₹0.00");
+        remainingAmountLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        topRightPanel.add(remainingAmountLabel);
+        add(topRightPanel, BorderLayout.NORTH);
     }
 
     private JPanel createInputPanel() {
@@ -68,13 +73,6 @@ public class ManageDeductionPanel extends JPanel {
         deductionDateChooser = new JDateChooser();
         deductionDateChooser.setDateFormatString("yyyy-MM-dd");
         inputPanel.add(deductionDateChooser, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        remainingAmountLabel = new JLabel("Remaining Amount: ₹0.00");
-        remainingAmountLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        inputPanel.add(remainingAmountLabel, gbc);
 
         return inputPanel;
     }
@@ -110,7 +108,6 @@ public class ManageDeductionPanel extends JPanel {
                 return;
             }
 
-            // Add check for 0 amount deduction
             if (deductionAmount == 0) {
                 JOptionPane.showMessageDialog(this, "Deduction amount cannot be zero.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -140,7 +137,7 @@ public class ManageDeductionPanel extends JPanel {
     }
 
     private void showDeductions() {
-        deductionsWindow.displayDeductions(deductions, totalAmount, remainingAmount);
+        deductionsWindow.displayDeductions(deductions, totalAmount, remainingAmount, null, null);
     }
 
     private void updateRemainingAmountLabel() {

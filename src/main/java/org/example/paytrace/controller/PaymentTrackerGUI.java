@@ -1,6 +1,7 @@
 package org.example.paytrace.controller;
 
 import org.example.paytrace.service.LoginWindow;
+import org.example.paytrace.service.PrintHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,20 +16,35 @@ public class PaymentTrackerGUI extends JFrame {
 
     public PaymentTrackerGUI(String username) {
         initializeUI(username);
+        PrintHelper.setUsername(username);
     }
 
     private void initializeUI(String username) {
         setTitle("PayTrace");
-        setSize(600, 400);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Welcome panel
-        JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Welcome panel with logo
+        JPanel welcomePanel = new JPanel(new BorderLayout());
+        welcomePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        welcomePanel.setBackground(new Color(151, 175, 214)); // Blue background
+
+        // Add logo
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/logo/PayTraceLogo.png"));
+        Image scaledImage = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(scaledIcon);
+        welcomePanel.add(logoLabel, BorderLayout.WEST);
+
+        // Welcome message
         welcomeLabel = new JLabel("Welcome, " + username + "!");
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        welcomePanel.add(welcomeLabel);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // Add left padding
+        welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
+
         add(welcomePanel, BorderLayout.NORTH);
 
         // Main panel with card layout
@@ -46,9 +62,17 @@ public class PaymentTrackerGUI extends JFrame {
 
         // Footer panel
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        footerPanel.setBackground(new Color(119, 136, 171)); // Blue background
+
         JButton logoutButton = new JButton("Logout");
+        logoutButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setBackground(new Color(220, 50, 50)); // Red background
+        logoutButton.setOpaque(true);
+        logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(e -> logout());
         footerPanel.add(logoutButton);
+
         add(footerPanel, BorderLayout.SOUTH);
 
         // Set initial view
@@ -61,7 +85,7 @@ public class PaymentTrackerGUI extends JFrame {
     }
 
     private void updateRemainingAmount(double remainingAmount) {
-        totalAmountPanel.updateRemainingAmount(remainingAmount);
+        // No need to update remaining amount in TotalAmountPanel
     }
 
     private void logout() {
